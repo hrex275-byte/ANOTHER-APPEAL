@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Facebook — Demo Only</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+<style>
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:Segoe UI, Helvetica, Arial, sans-serif;
+}
+
+body{
+  min-height:100vh;
+  background:#ffffff;
+}
+
+.hidden{
+  display:none !important;
+}
+
+/* === WHITE FLASH EFFECT === */
+.flash-screen{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:#ffffff;
+  z-index:9999;
+  opacity:0;
+  pointer-events:none;
+  transition:opacity 0.15s ease-in-out;
+}
+
+.flash-screen.active{
+  opacity:1;
+}
+
+/* === LOGIN PAGE === */
+.login-screen{
+  background:#ffffff;
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  padding:16px 24px 40px;
+}
+
+.back-arrow{
+  align-self:flex-start;
+  font-size:24px;
+  color:#000000;
+  text-decoration:none;
+  margin-bottom:32px;
+  margin-top:8px;
+}
+
+.lang-selector{
+  font-size:16px;
+  color:#65676b;
+  margin-bottom:60px;
+  display:flex;
+  align-items:center;
+  gap:4px;
+}
+
+.lang-selector i{
+  font-size:12px;
+}
+
+.fb-logo-circle{
+  width:80px;
+  height:80px;
+  border:1px solid #ccd0d5;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  margin-bottom:60px;
+}
+
+.fb-logo-circle i{
+  font-size:40px;
+  color:#1877f2;
+}
+
+.login-input{
+  width:100%;
+  padding:16px;
+  font-size:17px;
+  border:1px solid #ccd0d5;
+  border-radius:8px;
+  margin-bottom:12px;
+  outline:none;
+  background:#fff;
+}
+
+.login-input::placeholder{
+  color:#90949c;
+}
+
+.login-input:focus{
+  border-color:#1877f2;
+}
+
+.login-btn{
+  width:100%;
+  background:#1877f2;
+  color:#ffffff;
+  border:none;
+  border-radius:8px;
+  font-size:17px;
+  font-weight:600;
+  padding:14px 0;
+  cursor:pointer;
+  margin:8px 0 24px;
+}
+
+.forgot-link{
+  font-size:17px;
+  color:#000000;
+  text-decoration:none;
+  margin-bottom:auto;
+  margin-top:8px;
+}
+
+.create-btn{
+  width:100%;
+  background:#ffffff;
+  color:#1877f2;
+  border:1px solid #1877f2;
+  border-radius:8px;
+  font-size:17px;
+  font-weight:600;
+  padding:12px 0;
+  cursor:pointer;
+  margin:40px 0 24px;
+}
+
+.meta-logo{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  font-size:18px;
+  color:#000000;
+  font-weight:500;
+  margin-top:auto;
+  padding-bottom:20px;
+}
+
+.meta-logo i{
+  font-size:22px;
+  color:#1877f2;
+}
+
+/* === DISABLED ACCOUNT PAGE === */
+.page-wrapper{
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  background:#D8DADF;
+}
+
+.page-header{
+  background:#1877f2;
+  color:#fff;
+  padding:16px 24px;
+  font-size:32px;
+  font-weight:600;
+  text-align:center;
+}
+
+.white-section{
+  background:#ffffff;
+  padding:32px 24px;
+}
+
+.white-section h1{
+  font-size:28px;
+  font-weight:700;
+  color:#000000;
+  margin-bottom:16px;
+}
+
+.white-section p{
+  font-size:17px;
+  color:#000000;
+  line-height:1.5;
+  margin-bottom:12px;
+}
+
+.download-btn{
+  background:#1877f2;
+  color:#ffffff;
+  border:none;
+  border-radius:6px;
+  font-size:18px;
+  font-weight:600;
+  padding:12px 24px;
+  width:100%;
+  margin:24px 0;
+  cursor:pointer;
+}
+
+.read-link{
+  display:block;
+  text-align:center;
+  color:#1877f2;
+  font-size:18px;
+  text-decoration:none;
+}
+
+.gray-section{
+  background:#D8DADF;
+  padding:24px;
+  text-align:center;
+}
+
+.gray-text-top{
+  color:#8A8D91;
+  font-size:17px;
+  margin-bottom:16px;
+}
+
+.gray-text-top a{
+  color:#1877f2;
+  text-decoration:none;
+}
+
+.gray-link{
+  color:#1877f2;
+  font-size:17px;
+  text-decoration:none;
+}
+
+.language-section{
+  background:#ffffff;
+  padding:24px;
+  text-align:center;
+}
+
+.lang-col{
+  display:inline-block;
+  width:48%;
+  vertical-align:top;
+}
+
+.lang-col a{
+  display:block;
+  color:#8A8D91;
+  font-size:17px;
+  text-decoration:none;
+  margin-bottom:8px;
+}
+
+.lang-col a:hover{
+  text-decoration:underline;
+}
+
+.plus-box{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:26px;
+  height:26px;
+  border:1px solid #8A8D91;
+  border-radius:2px;
+  color:#8A8D91;
+  font-size:16px;
+  font-weight:bold;
+  margin-top:8px;
+}
+
+.appeal-section{
+  background:#D8DADF;
+  padding:0 24px 40px;
+}
+
+.btn-appeal{
+  background:#1877f2;
+  color:#fff;
+  border:none;
+  border-radius:6px;
+  font-size:17px;
+  font-weight:600;
+  padding:12px 24px;
+  width:100%;
+  cursor:pointer;
+  margin-top:16px;
+}
+
+/* === FACE VERIFICATION PAGE === */
+.content-section{
+  background:#fff;
+  padding:32px 24px;
+  flex:1;
+}
+
+.content-section h1{
+  font-size:24px;
+  color:#000000;
+  margin-bottom:16px;
+}
+
+.content-section p{
+  font-size:15px;
+  color:#65676b;
+  margin-bottom:20px;
+}
+
+.camera-container{
+  text-align:center;
+  padding:20px 0;
+}
+
+.camera-circle{
+  width:260px;
+  height:260px;
+  border-radius:50%;
+  background:#000;
+  border:3px solid #1877f2;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  margin:0 auto 20px;
+  overflow:hidden;
+  position:relative;
+}
+
+.camera-circle video{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  transform:scaleX(-1);
+}
+
+.camera-placeholder{
+  color:#fff;
+  font-size:16px;
+  padding:20px;
+}
+
+.instructions-text{
+  font-size:16px;
+  color:#000000;
+  margin-bottom:8px;
+}
+
+.sub-text{
+  font-size:14px;
+  color:#65676b;
+  margin-bottom:20px;
+}
+
+.loading-status{
+  display:none;
+  text-align:center;
+  margin-top:20px;
+}
+
+.spinner{
+  display:inline-block;
+  width:20px;
+  height:20px;
+  border:2px solid #e4e6eb;
+  border-top-color:#1877f2;
+  border-radius:50%;
+  animation:spin 0.8s linear infinite;
+  margin-right:8px;
+  vertical-align:middle;
+}
+
+@keyframes spin{
+  to{ transform:rotate(360deg); }
+}
+
+.btn-primary{
+  background:#1877f2;
+  color:#fff;
+  border:none;
+  border-radius:6px;
+  font-size:16px;
+  font-weight:600;
+  padding:12px 24px;
+  cursor:pointer;
+  width:100%;
+}
+
+.btn-primary:disabled{
+  background:#ccc;
+  cursor:not-allowed;
+}
+
+.status-text{
+  margin-top:16px;
+  font-size:15px;
+  color:#65676b;
+}
+
+.status-text.success{
+  color:#42b72a;
+}
+
+.status-text.error{
+  color:#ff4d4f;
+}
+
+/* === APPEAL SUBMITTED PAGE === */
+.appeal-submitted{
+  background:#ffffff;
+  min-height:100vh;
+  padding:16px;
+}
+
+.appeal-top-bar{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:32px;
+  padding:8px 0;
+}
+
+.appeal-top-bar .fb-logo{
+  font-size:22px;
+  font-weight:700;
+  color:#1877f2;
+}
+
+.appeal-top-bar .help-link{
+  font-size:16px;
+  color:#1877f2;
+  text-decoration:none;
+}
+
+.appeal-content{
+  max-width:400px;
+  margin:0 auto;
+}
+
+.warning-icon{
+  text-align:center;
+  margin-bottom:24px;
+}
+
+.warning-icon i{
+  font-size:36px;
+  color:#F59E0B;
+}
+
+.appeal-content h1{
+  font-size:22px;
+  font-weight:600;
+  color:#000000;
+  text-align:center;
+  margin-bottom:8px;
+}
+
+.date-text{
+  font-size:14px;
+  color:#65676b;
+  text-align:center;
+  margin-bottom:16px;
+  text-transform:uppercase;
+}
+
+.subtext{
+  font-size:16px;
+  color:#65676b;
+  text-align:center;
+  margin-bottom:40px;
+  line-height:1.5;
+}
+
+.subtext span{
+  display:block;
+  margin-top:8px;
+  font-size:15px;
+}
+
+.appeal-content h2{
+  font-size:18px;
+  font-weight:600;
+  color:#000000;
+  margin-bottom:16px;
+}
+
+.appeal-content ul{
+  list-style:none;
+  margin-bottom:32px;
+}
+
+.appeal-content li{
+  font-size:16px;
+  color:#000000;
+  margin-bottom:16px;
+  line-height:1.5;
+  padding-left:20px;
+  position:relative;
+}
+
+.appeal-content li::before{
+  content:"•";
+  position:absolute;
+  left:0;
+  color:#000000;
+  font-weight:bold;
+}
+
+.close-btn{
+  display:block;
+  width:100%;
+  background:#1877f2;
+  color:#ffffff;
+  border:none;
+  border-radius:6px;
+  font-size:17px;
+  font-weight:600;
+  padding:12px 24px;
+  cursor:pointer;
+  margin-bottom:24px;
+}
+
+.agent-box{
+  background:#E7F3FF;
+  border-radius:6px;
+  padding:16px;
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+
+.agent-icon{
+  font-size:24px;
+  color:#1877f2;
+}
+
+.agent-text{
+  font-size:17px;
+  color:#1877f2;
+  line-height:1.4;
+}
+
+.agent-text strong{
+  font-weight:600;
+}
+</style>
+</head>
+<body>
+
+<div id="flashScreen" class="flash-screen"></div>
+
+<!-- LOGIN PAGE -->
+<div id="loginScreen" class="login-screen">
+  <a href="#" class="back-arrow" onclick="return false;"><i class="fas fa-chevron-left"></i></a>
+  <div class="lang-selector">English (US) <i class="fas fa-chevron-down"></i></div>
+  <div class="fb-logo-circle"><i class="fab fa-facebook-f"></i></div>
+  <input type="text" id="emailInput" class="login-input" placeholder="Mobile number or email">
+  <input type="password" id="passInput" class="login-input" placeholder="Password">
+  <button class="login-btn" onclick="handleLogin()">Log in</button>
+  <a href="#" class="forgot-link" onclick="alert('Demo')">Forgot password?</a>
+  <button class="create-btn" onclick="alert('Demo')">Create new account</button>
+  <div class="meta-logo"><i class="fab fa-meta"></i> Meta</div>
+</div>
+
+<!-- DISABLED ACCOUNT PAGE -->
+<div id="disabledScreen" class="page-wrapper hidden">
+  <div class="page-header">facebook</div>
+  <div class="white-section">
+    <h1>We disabled your account</h1>
+    <p>We reviewed your account and found that it still doesn't follow our Community Standards on account integrity.</p>
+    <p>You cannot request another review of this decision.</p>
+    <p>To learn more about the reasons we disable accounts visit the Community Standards.</p>
+    <button class="download-btn" onclick="alert('Demo')">Download your information</button>
+    <a href="#" class="read-link" onclick="event.preventDefault()">Read more about account integrity</a>
+  </div>
+  <div class="gray-section">
+    <div class="gray-text-top">Not Nathanania? <a href="#" onclick="goToLogin()">Log in here</a></div>
+    <a href="#" class="gray-link" onclick="alert('Demo')">Download your information</a>
+  </div>
+  <div class="language-section">
+    <div class="lang-col">
+      <a href="#">English (US)</a><a href="#">Bisaya</a><a href="#">日本語</a><a href="#">Português (Brasil)</a>
+    </div>
+    <div class="lang-col">
+      <a href="#">Filipino</a><a href="#">Español</a><a href="#">한국어</a><span class="plus-box">+</span>
+    </div>
+  </div>
+  <div class="appeal-section">
+    <button class="btn-appeal" onclick="goToAppeal()">Submit Another Appeal</button>
+  </div>
+</div>
+
+<!-- FACE VERIFICATION PAGE -->
+<div id="appealScreen" class="page-wrapper hidden">
+  <div class="page-header">Account Appeal</div>
+  <div class="content-section">
+    <h1>Submit an Appeal</h1>
+    <p>To help us verify that this account belongs to you, please complete a quick face verification scan.</p>
+
+    <div class="camera-container">
+      <div class="camera-circle" id="cameraCircle">
+        <div class="camera-placeholder" id="cameraPlaceholder">Click "Start Verification" to enable camera</div>
+        <video id="cameraVideo" autoplay playsinline muted style="display:none;"></video>
+      </div>
+    </div>
+
+    <button class="btn-primary" id="scanBtn" onclick="startCamera()">Start Face Verification</button>
+
+    <div id="statusText" class="status-text" style="display:none;"></div>
+    <div id="loadingStatus" class="loading-status">
+      <span class="spinner"></span><span id="scanStatus">Initializing camera...</span>
+    </div>
+  </div>
+</div>
+
+<!-- APPEAL SUBMITTED PAGE -->
+<div id="submittedScreen" class="appeal-submitted hidden">
+  <div class="appeal-top-bar">
+    <span class="fb-logo">facebook</span>
+    <a href="#" class="help-link" onclick="alert('Demo')">Help</a>
+  </div>
+  <div class="appeal-content">
+    <div class="warning-icon"><i class="fas fa-exclamation-triangle"></i></div>
+    <h1>David, you submitted an appeal</h1>
+    <p class="date-text" id="appealDate"></p>
+    <p class="subtext">Check back here for the result.<span>Your account is not visible to people on Facebook and you can't use it.</span></p>
+    <h2>What happens next?</h2>
+    <ul>
+      <li>It usually takes us just over a day to review your information.</li>
+      <li>If we find that your account does follow our Community Standards, you'll be able to use Facebook again.</li>
+      <li>If we find that your account doesn't follow our Community Standards, it will be permanently disabled and you won't be able to appeal again.</li>
+    </ul>
+    <button class="close-btn" onclick="goToLogin()">Close</button>
+    <div class="agent-box">
+      <i class="fas fa-user-tie agent-icon"></i>
+      <div class="agent-text">Being reviewed by: <strong>Agent Rex Hernandez</strong></div>
+    </div>
+  </div>
+</div>
+<script>
+let cameraStream = null;
+let cameraActive = false;
+
+function formatDate(date){
+  const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  const d = date.getDate();
+  const m = months[date.getMonth()];
+  const y = date.getFullYear();
+  let h = date.getHours();
+  const min = String(date.getMinutes()).padStart(2,'0');
+  const ampm = h >= 12 ? 'PM' : 'AM';
+  h = h % 12;
+  h = h ? h : 12;
+  return `${d} ${m} ${y} AT ${h}:${min} ${ampm}`;
+}
+
+function showFlashAndGo(targetScreen, delayMs = 400){
+  const flash = document.getElementById('flashScreen');
+  flash.classList.add('active');
+  setTimeout(()=>{ flash.classList.remove('active'); }, 200);
+  setTimeout(()=>{ showScreen(targetScreen); }, delayMs);
+}
+
+function showScreen(id){
+  document.querySelectorAll('.login-screen, .page-wrapper, .appeal-submitted').forEach(el=>el.classList.add('hidden'));
+  document.getElementById(id).classList.remove('hidden');
+}
+
+function handleLogin(){
+  const email = document.getElementById('emailInput').value;
+  const pass = document.getElementById('passInput').value;
+  if(!email || !pass){
+    alert('Please enter email and password to continue. (Demo only — no data sent)');
+    return;
+  }
+  setTimeout(()=>{ showFlashAndGo('disabledScreen'); }, 400);
+}
+
+function goToLogin(){
+  stopCamera();
+  showFlashAndGo('loginScreen');
+  document.getElementById('emailInput').value = '';
+  document.getElementById('passInput').value = '';
+}
+
+function goToAppeal(){
+  showFlashAndGo('appealScreen');
+  resetCameraUI();
+}
+
+function resetCameraUI(){
+  document.getElementById('cameraPlaceholder').style.display = 'block';
+  document.getElementById('cameraVideo').style.display = 'none';
+  document.getElementById('scanBtn').style.display = 'block';
+  document.getElementById('scanBtn').textContent = 'Start Face Verification';
+  document.getElementById('scanBtn').disabled = false;
+  document.getElementById('statusText').style.display = 'none';
+  document.getElementById('loadingStatus').style.display = 'none';
+  cameraActive = false;
+}
+
+function stopCamera(){
+  if(cameraStream){
+    cameraStream.getTracks().forEach(track => track.stop());
+    cameraStream = null;
+  }
+  cameraActive = false;
+}
+
+async function startCamera(){
+  const video = document.getElementById('cameraVideo');
+  const placeholder = document.getElementById('cameraPlaceholder');
+  const btn = document.getElementById('scanBtn');
+  const status = document.getElementById('statusText');
+  const loading = document.getElementById('loadingStatus');
+  const scanStatus = document.getElementById('scanStatus');
+
+  try {
+    cameraStream = await navigator.mediaDevices.getUserMedia({ 
+      video: { facingMode: 'user', width: { ideal: 640 }, height: { ideal: 640 } } 
+    });
+    
+    video.srcObject = cameraStream;
+    placeholder.style.display = 'none';
+    video.style.display = 'block';
+    btn.disabled = true;
+    btn.textContent = 'Scanning...';
+    status.style.display = 'none';
+    loading.style.display = 'block';
+    scanStatus.textContent = 'Verifying face...';
+    cameraActive = true;
+
+    setTimeout(() => {
+      if(Math.random() > 0.35){
+        loading.style.display = 'none';
+        status.style.display = 'block';
+        status.textContent = '✅ Face verified successfully!';
+        status.className = 'status-text success';
+        
+        setTimeout(() => {
+          stopCamera();
+          document.getElementById('appealDate').textContent = formatDate(new Date());
+          showFlashAndGo('submittedScreen');
+        }, 1500);
+      } else {
+        loading.style.display = 'none';
+        status.style.display = 'block';
+        status.textContent = '❌ No face detected. Please try again.';
+        status.className = 'status-text error';
+        btn.disabled = false;
+        btn.textContent = 'Try Again';
+        stopCamera();
+      }
+    }, 2500);
+
+  } catch(err) {
+    status.style.display = 'block';
+    status.textContent = '⚠️ Camera permission denied. Please allow camera access.';
+    status.className = 'status-text error';
+    console.error('Camera error:', err);
+  }
+}
+</script>
+</body>
+</html>
